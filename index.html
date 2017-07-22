@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+	<title>canvas时钟</title>
+	<style type="text/css">
+/*		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;*/
+		div{
+			width: 300px;
+			height: 300px;
+			position: relative;
+		}
+		div canvas{
+			position: absolute;
+		}
+		p{
+			font-size: 18px;
+		}
+		div p:nth-of-type(1){
+			position: absolute;
+			top:170px;
+			left:50%;
+			transform:-webkit-translateX(-50%);
+			transform:-moz-translateX(-50%);
+			transform:-ms-translateX(-50%);
+			transform:-o-translateX(-50%);
+			transform:translateX(-50%);
+		}
+		div p:nth-of-type(2){
+			position: absolute;
+			top:200px;
+			left:50%;
+			transform:-webkit-translateX(-50%);
+			transform:-moz-translateX(-50%);
+			transform:-ms-translateX(-50%);
+			transform:-o-translateX(-50%);
+			transform:translateX(-50%);
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<canvas id="clock" width="300px" height="300px">该浏览器不支持canvas</canvas>
+<!-- 		<p id="p1">1asdfasdf</p>
+		<p id="p2">2asdfasdf</p> -->
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	//构造函数模式
+	function Get_time(){
+		this.date = new Date();
+		this.year = this.date.getFullYear();
+		this.month = this.date.getMonth() + 1;
+		this.day = this.date.getDate();
+		this.hour = this.date.getHours();
+		this.minute = this.date.getMinutes();
+		this.seconds = this.date.getSeconds();
+	}
+	function draw(s,m,h,y,mo,d){
+		if(h>=12){
+			h=h-12;
+		}
+		console.log(h)
+		console.log(m)
+		console.log(s)
+		var canvas = document.getElementById('clock');
+		var clock = canvas.getContext('2d');
+		clock.clearRect(0,0,300,300);
+		//画圆盘
+		clock.save();
+		clock.translate(150,150)	
+		clock.beginPath();
+		clock.arc(0,0,140,0,Math.PI*2,true);
+		clock.lineWidth = 8;
+		clock.strokeStyle = "#272822";
+		clock.stroke();
+		clock.restore();
+		//画小时的刻度
+		clock.save();
+		clock.translate(150,150)	
+		for (var i=0;i<12;i++){
+			clock.beginPath();
+			clock.rotate(Math.PI/6);
+			clock.moveTo(140,0);
+			clock.lineTo(120,0);
+			clock.lineWidth = 8;
+			clock.stroke();
+		}
+		clock.restore();
+		//画分钟的刻度
+		clock.save();
+		clock.translate(150,150)	
+		for (var i=0;i<60;i++){
+				clock.beginPath();
+				clock.rotate(Math.PI/30);
+				clock.moveTo(140,0);
+				clock.lineTo(130,0);
+				clock.lineWidth = 2;
+				clock.stroke();				
+		}
+		clock.restore();
+		//画时针
+		clock.save();
+		clock.translate(150,150)
+		clock.beginPath();
+		clock.rotate(Math.PI/6*h);
+		clock.moveTo(0,-70);
+		clock.lineTo(0,0);
+		clock.lineWidth = 4;
+		clock.stroke();
+		clock.restore();
+		//画分针
+  		clock.save();
+  		clock.translate(150,150)	
+  		clock.rotate(Math.PI/30*m);		
+		clock.beginPath();
+		clock.moveTo(0,-100);
+		clock.lineTo(0,0);
+		clock.lineWidth = 3;
+		clock.stroke();
+		clock.restore();
+		//画秒针
+		clock.save();
+		clock.translate(150,150)
+		clock.beginPath();
+		clock.rotate(Math.PI/30*s);
+		clock.moveTo(0,-120);
+		clock.lineTo(0,0);
+		clock.lineWidth = 2;
+		clock.stroke();
+		clock.restore();
+		//文本
+		if(m<10){
+			m = "0"+m;
+		}
+		if(s<10){
+			s = "0"+s;
+		}
+		var str1 =h+12+":"+m+":"+s;
+		var str2 =y+"年"+mo+"月"+d+"日";
+		clock.save();
+		clock.font = "16px serif";
+		clock.textBaseline = "hanging";
+		clock.textAlign = "center";
+		clock.fillText(str1,150,190);
+		clock.fillText(str2,150,220);
+		clock.fillStyle = "red";
+		clock.restore();
+
+	 //    str =y+"年"+mo+"月"+s+"日";
+		// clock.save();
+		
+		// clock.fillStyle = rgba(255,255,255);
+		// clock.restore();
+	}
+	function show(){
+		var time = new Get_time();
+		// var p1 = document.getElementById('p1');
+		// var p2 = document.getElementById('p2');
+		// p1.firstChild.nodeValue = time.year + '年' + time.month + '月' + time.day + '日';
+		// p2.firstChild.nodeValue = time.hour + ':' + time.minute + ':' + time.seconds ;
+		draw(time.seconds,time.minute,time.hour,time.year,time.month,time.day);	
+	}
+	window.onload = show;
+	setInterval(show, 1000)
+
+</script>
